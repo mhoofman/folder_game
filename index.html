@@ -23,7 +23,6 @@
       .folder_3 { color: green; font-size: 350%; }
       .folder_4 { color: blue; font-size: 350%; }
       .folder_5 { color: indigo;  font-size: 350%; }
-      .winner { color: green; font-size: 350%; }
       a.normal:link, a.normal:visited { text-decoration: underline; }
       table#stats { text-align: center; }
   </style>
@@ -161,17 +160,17 @@ var getRand = function(val) {
 }
 
 var refreshStats = function() {
-    $("#stats tr:nth-child(2) td:nth-child(2)").text(trade_count);
-    $("#stats tr:nth-child(2) td:nth-child(3)").text(trade_wins);
-    $("#stats tr:nth-child(2) td:nth-child(4)").text(trade_loses);
+    $("#stats tr:nth-child(1) td:nth-child(2)").text(trade_count);
+    $("#stats tr:nth-child(1) td:nth-child(3)").text(trade_wins);
+    $("#stats tr:nth-child(1) td:nth-child(4)").text(trade_loses);
     if (trade_count)
-        $("#stats tr:nth-child(2) td:nth-child(5)").text(Math.ceil((trade_wins / trade_count) * 100));
-    $("#stats tr:nth-child(3) td:nth-child(2)").text(keep_count);
-    $("#stats tr:nth-child(3) td:nth-child(3)").text(keep_wins);
-    $("#stats tr:nth-child(3) td:nth-child(4)").text(keep_loses);
+        $("#stats tr:nth-child(1) td:nth-child(5)").text(Math.ceil((trade_wins / trade_count) * 100));
+    $("#stats tr:nth-child(2) td:nth-child(2)").text(keep_count);
+    $("#stats tr:nth-child(2) td:nth-child(3)").text(keep_wins);
+    $("#stats tr:nth-child(2) td:nth-child(4)").text(keep_loses);
     if (keep_count)
-        $("#stats tr:nth-child(3) td:nth-child(5)").text(Math.ceil((keep_wins / keep_count) * 100));
-    $("#stats tr:nth-child(4) td:nth-child(2)").text(trade_count + keep_count);
+        $("#stats tr:nth-child(2) td:nth-child(5)").text(Math.ceil((keep_wins / keep_count) * 100));
+    $("#stats tr:nth-child(3) td:nth-child(2)").text(trade_count + keep_count);
 }
 });
 -->
