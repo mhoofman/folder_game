@@ -1,0 +1,180 @@
+<!doctype html>  
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Folder Game</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!--  Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style type="text/css">
+      a:link, a:visited, a:active { text-decoration: none; }
+      h3 { margin: 4px 0px; padding: 0; font-size: 125%; }
+      html, body { margin: 0; padding: 0; font-size: 100%; text-align: center; }
+      #wrap { width: 960px; }
+      #side_bar { float: left; width: 240px; padding: 10px; text-align: left; }
+      #content { float: right; width: 680px; padding: 10px; }
+      #content p { text-align: left; }
+      #choice, #errors { margin: 5px; }
+      ul { list-style-type: none; margin: 0; padding: 0; }
+      li { display: inline; }
+      .folder_1 { color: red; font-size: 350%; }
+      .folder_2 { color: orange; font-size: 350%; }
+      .folder_3 { color: green; font-size: 350%; }
+      .folder_4 { color: blue; font-size: 350%; }
+      .folder_5 { color: indigo;  font-size: 350%; }
+      .winner { color: green; font-size: 350%; }
+      a.normal:link, a.normal:visited { text-decoration: underline; }
+      table#stats { text-align: center; }
+  </style>
+</head>
+<body>
+<div id="wrap">
+<div id="side_bar">
+<h3>Folder Game</h3>
+<table id="stats">
+<thead>
+<tr><th>&nbsp;</th><th>Count</th><th>Wins</th><th>Loses</th><th>% Wins</th></tr>
+</thead>
+<tbody>
+<tr><td>Trade</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Keep</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Total</td><td>0</td></tr>
+</tbody>
+</table>
+<a id="restart" class="normal" href="#">Restart</a>    
+</div>
+<div id="content">
+<p>Four identical sealed envelopes are on a table. One of them contains a $100 bill. You select an envelope at random and hold it in your hand without opening it. Two of the three remaining envelopes are then removed and set aside, unopened. You are told that they are empty. You are given the choice of keeping the envelope you chose or exchanging it for the one on the table. What should you do?</p>
+<ul>
+    <li class="show_1"><a class="folder_1" href="#">&#9993;</a></li>
+    <li class="show_2"><a class="folder_2" href="#">&#9993;</a></li>
+    <li class="show_3"><a class="folder_3" href="#">&#9993;</a></li>
+    <li class="show_4"><a class="folder_4" href="#">&#9993;</a></li>
+    <li class="show_5"><a class="folder_5" href="#">&#9993;</a></li>
+</ul>
+<div id="choice"></div>
+<div id="decide">
+<a id="trade" class="normal" href="#">Trade</a> or 
+<a id="keep" class="normal" href="#">Keep</a>
+</div>
+<div id="result"></div>
+<div id="restart" style="display:none;">
+  (<a href="#">Restart</a>)
+</div>
+<div id="errors"></div>
+</div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+<script type="text/javascript"><!--
+$(function (){
+
+var trade_count = 0;
+var trade_wins = 0;
+var trade_loses = 0;
+var keep_count = 0;
+var keep_wins = 0;
+var keep_loses = 0;
+var folders = [1,2,3,4,5];
+var num_folders = folders.length;
+var rand = Math.floor(Math.random() * num_folders) + 1;
+var choice = 0;
+
+folders.splice((rand - 1), 1);
+$("#decide").hide();
+
+var clicked_fold = function() {
+	var curr_fold = this.className.match(/\d/gi);
+	var next_rand = getRand(curr_fold);
+	
+	for (var i = 1; i <= num_folders; i++) {
+		   if (rand != i) $("li.show_" + i).hide();	
+	}
+	
+	if (rand == curr_fold) $("li.show_" + next_rand).show();
+	
+	$("#choice").html("You chose:<br /><span class=\"folder_" + curr_fold + "\">&#9993;</span>").show();
+	$("li.show_" + curr_fold).hide();
+	choice = curr_fold;
+	$("#decide").show();
+}
+
+$("a.folder_1").click(clicked_fold);
+$("a.folder_2").click(clicked_fold);
+$("a.folder_3").click(clicked_fold);
+$("a.folder_4").click(clicked_fold);
+$("a.folder_5").click(clicked_fold);
+
+$("#trade").click(function() {
+	if (choice != rand) {
+		$("#decide").hide();
+		$("#result").html("You Win!").show();
+		$("#restart").show();
+		$("a.folder_" + rand).html("<span style=\"color: green;\">$</span>");
+		trade_count++; trade_wins++; refreshStats();
+	} else {
+		$("#decide").hide();
+		$("#result").html("You lose.").show();
+		$("span.folder_" + choice).html("<span style=\"color: green;\">$</span>");
+		trade_count++; trade_loses++; refreshStats();
+	}
+});
+
+$("#keep").click(function() {
+    if (choice == rand) {
+        $("#decide").hide();
+        $("#result").html("You win!").show();
+        $("span.folder_" + rand).html("<span style=\"color: green;\">$</span>");
+        keep_count++; keep_wins++; refreshStats();
+    } else {
+        $("#decide").hide();
+        $("#result").html("You lose.").show();
+        $("a.folder_" + rand).html("<span style=\"color: green;\">$</span>");
+        keep_count++; keep_loses++; refreshStats();
+    }
+});
+
+$("#restart").click(function() {
+	folders = [1,2,3,4,5];
+	rand = Math.floor(Math.random() * num_folders) + 1;
+	choice = 0;
+
+	for (var i = 1; i <= num_folders; i++) $("li.show_" + i).show();
+	for (var j = 1; j <= num_folders; j++) $("a.folder_" + j).html("&#9993;");
+	folders.splice((rand - 1), 1);
+	$("#decide").hide();
+	$("#choice").hide();
+	$("#result").hide();
+	$("#errors").hide();
+});
+
+var getRand = function(val) {
+	var index = 0;
+	var curr_fold_len = folders.length;
+	
+	for (var i = 0; i < curr_fold_len; i++) {
+		if (val == folders[i]) index = i;
+	}
+	folders.splice(index, 1);
+    var new_rand = Math.floor(Math.random() * folders.length);
+    return folders[new_rand];
+}
+
+var refreshStats = function() {
+    $("#stats tr:nth-child(2) td:nth-child(2)").text(trade_count);
+    $("#stats tr:nth-child(2) td:nth-child(3)").text(trade_wins);
+    $("#stats tr:nth-child(2) td:nth-child(4)").text(trade_loses);
+    if (trade_count)
+        $("#stats tr:nth-child(2) td:nth-child(5)").text(Math.ceil((trade_wins / trade_count) * 100));
+    $("#stats tr:nth-child(3) td:nth-child(2)").text(keep_count);
+    $("#stats tr:nth-child(3) td:nth-child(3)").text(keep_wins);
+    $("#stats tr:nth-child(3) td:nth-child(4)").text(keep_loses);
+    if (keep_count)
+        $("#stats tr:nth-child(3) td:nth-child(5)").text(Math.ceil((keep_wins / keep_count) * 100));
+    $("#stats tr:nth-child(4) td:nth-child(2)").text(trade_count + keep_count);
+}
+});
+-->
+</script>
+</body>
+</html>
